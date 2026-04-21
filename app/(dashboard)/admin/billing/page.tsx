@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { CreditCard, Download, Search, CheckCircle2, Clock, AlertCircle } from "lucide-react"
+import { CreditCard, Download, Search, CheckCircle2, Clock, AlertCircle, IndianRupee } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const initialInvoices = [
@@ -25,12 +25,36 @@ export default function BillingPage() {
         inv.id.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
+    const totalRevenue = invoices.filter(i => i.status === "Paid").reduce((acc, curr) => acc + curr.amount, 0)
+    const pendingArrivals = invoices.filter(i => i.status === "Unpaid").reduce((acc, curr) => acc + curr.amount, 0)
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground">Billing & Payments</h1>
                     <p className="text-muted-foreground">Manage invoices and track hospital revenue.</p>
+                </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-2xl border border-border bg-emerald-500/5 p-6 shadow-sm border-emerald-500/20">
+                    <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-2">Total Revenue Received</p>
+                    <div className="flex items-center gap-2">
+                        <IndianRupee className="h-6 w-6 text-emerald-600" />
+                        <span className="text-3xl font-bold text-foreground">
+                            {totalRevenue.toLocaleString()}
+                        </span>
+                    </div>
+                </div>
+                <div className="rounded-2xl border border-border bg-amber-500/5 p-6 shadow-sm border-amber-500/20">
+                    <p className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Pending Payments</p>
+                    <div className="flex items-center gap-2">
+                        <IndianRupee className="h-6 w-6 text-amber-600" />
+                        <span className="text-3xl font-bold text-foreground">
+                            {pendingArrivals.toLocaleString()}
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -54,45 +78,53 @@ export default function BillingPage() {
                             <tr>
                                 <th className="px-6 py-4">Invoice ID</th>
                                 <th className="px-6 py-4">Patient</th>
+                                <th className="px-6 py-4">Date</th>
                                 <th className="px-6 py-4">Amount</th>
                                 <th className="px-6 py-4">Status</th>
                                 <th className="px-6 py-4 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
-                            {filteredInvoices.map((invoice) => (
-                                <tr key={invoice.id} className="hover:bg-muted/30 transition-colors">
-                                    <td className="px-6 py-4 font-medium text-foreground">{invoice.id}</td>
-                                    <td className="px-6 py-4 text-foreground">{invoice.patient}</td>
-                                    <td className="px-6 py-4 font-bold text-foreground">₹{invoice.amount.toLocaleString()}</td>
-                                    <td className="px-6 py-4">
-                                        <span className={cn(
-                                            "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold",
-                                            invoice.status === "Paid"
-                                                ? "bg-emerald-500/10 text-emerald-600"
-                                                : "bg-amber-500/10 text-amber-600"
-                                        )}>
-                                            {invoice.status === "Paid" ? <CheckCircle2 className="h-3 w-3" /> : <Clock className="h-3 w-3" />}
-                                            {invoice.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-3">
-                                            {invoice.status === "Unpaid" && (
-                                                <button
-                                                    onClick={() => handlePay(invoice.id)}
-                                                    className="text-xs font-bold text-primary hover:underline"
-                                                >
-                                                    Pay Now
-                                                </button>
-                                            )}
-                                            <button className="text-muted-foreground hover:text-foreground">
-                                                <Download className="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                    </td>
+                            {filteredInvoices.length === 0 ? (
+                                <tr>
+                                    <td colSpan={6} className="p-12 text-center text-muted-foreground">No invoices found.</td>
                                 </tr>
-                            ))}
+                            ) : (
+                                filteredInvoices.map((invoice) => (
+                                    <tr key={invoice.id} className="hover:bg-muted/30 transition-colors">
+                                        <td className="px-6 py-4 font-mono text-xs font-medium text-foreground">{invoice.id}</td>
+                                        <td className="px-6 py-4 font-medium text-foreground">{invoice.patient}</td>
+                                        <td className="px-6 py-4 text-muted-foreground">{invoice.date}</td>
+                                        <td className="px-6 py-4 font-bold text-foreground">₹{invoice.amount.toLocaleString()}</td>
+                                        <td className="px-6 py-4">
+                                            <span className={cn(
+                                                "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold",
+                                                invoice.status === "Paid"
+                                                    ? "bg-emerald-500/10 text-emerald-600"
+                                                    : "bg-amber-500/10 text-amber-600"
+                                            )}>
+                                                {invoice.status === "Paid" ? <CheckCircle2 className="h-3 w-3" /> : <Clock className="h-3 w-3" />}
+                                                {invoice.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-3">
+                                                {invoice.status === "Unpaid" && (
+                                                    <button
+                                                        onClick={() => handlePay(invoice.id)}
+                                                        className="text-xs font-bold text-primary hover:underline hover:opacity-80 transition-all"
+                                                    >
+                                                        Mark Paid
+                                                    </button>
+                                                )}
+                                                <button className="text-muted-foreground hover:text-foreground p-1 rounded-lg hover:bg-muted transition-all">
+                                                    <Download className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>

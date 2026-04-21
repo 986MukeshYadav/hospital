@@ -2,33 +2,52 @@ import { auth } from "@/lib/auth"
 import { NextResponse } from "next/server"
 
 export default auth((req) => {
-    const { nextUrl } = req
-    const isLoggedIn = !!req.auth
-    const userRole = (req.auth?.user as any)?.role
+  const { nextUrl } = req
+  const session = req.auth
+  const role = (session?.user as any)?.role as string | undefined
+  const pathname = nextUrl.pathname
 
-    const isApiAuthRoute = nextUrl.pathname.startsWith("/api/auth")
-    const isAuthRoute = ["/login"].includes(nextUrl.pathname)
+  const isApiAuthRoute = pathname.startsWith("/api/auth")
+  const isAuthRoute = ["/login"].includes(pathname)
 
-    if (isApiAuthRoute) return NextResponse.next()
+  if (isApiAuthRoute) return NextResponse.next()
 
-    if (isAuthRoute) {
-        if (isLoggedIn) {
-            // Redirect to respective dashboard if already logged in
-            if (userRole === "Admin") return NextResponse.redirect(new URL("/admin", nextUrl))
-            if (userRole === "Doctor") return NextResponse.redirect(new URL("/doctor", nextUrl))
-            if (userRole === "Patient") return NextResponse.redirect(new URL("/patient", nextUrl))
-            return NextResponse.redirect(new URL("/dashboard", nextUrl))
-        }
-        return NextResponse.next()
-    }
+  // Not logged in
+  if (!session) {
+    if (isAuthRoute) return NextResponse.next()
+    return NextResponse.redirect(new URL("/login", req.url))
+  }
 
-    if (!isLoggedIn) {
-        return NextResponse.redirect(new URL("/login", nextUrl))
-    }
+  // Already logged in - redirect away from login page to respective dashboards
+  if (isAuthRoute) {
+    if (role === "Admin") return NextResponse.redirect(new URL("/admin", req.url))
+    if (role === "Doctor") return NextResponse.redirect(new URL("/doctor", req.url))
+    if (role === "Patient") return NextResponse.redirect(new URL("/patient", req.url))
+    return NextResponse.redirect(new URL("/", req.url))
+  }
 
-    return NextResponse.next()
+  // Role-based access protection for dashboard routes
+  if (pathname.startsWith("/admin") && role !== "Admin") {
+    if (role === "Doctor") return NextResponse.redirect(new URL("/doctor", req.url))
+    if (role === "Patient") return NextResponse.redirect(new URL("/patient", req.url))
+    return NextResponse.redirect(new URL("/login", req.url))
+  }
+
+  if (pathname.startsWith("/doctor") && role !== "Doctor") {
+    if (role === "Admin") return NextResponse.redirect(new URL("/admin", req.url))
+    if (role === "Patient") return NextResponse.redirect(new URL("/patient", req.url))
+    return NextResponse.redirect(new URL("/login", req.url))
+  }
+
+  if (pathname.startsWith("/patient") && role !== "Patient") {
+    if (role === "Admin") return NextResponse.redirect(new URL("/admin", req.url))
+    if (role === "Doctor") return NextResponse.redirect(new URL("/doctor", req.url))
+    return NextResponse.redirect(new URL("/login", req.url))
+  }
+
+  return NextResponse.next()
 })
 
 export const config = {
-    matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 }
