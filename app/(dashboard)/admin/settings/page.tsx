@@ -1,11 +1,33 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useTheme } from "next-themes"
-import { Moon, Sun, Monitor, Shield, Bell, User } from "lucide-react"
+import { Moon, Sun, Monitor, RefreshCw, AlertTriangle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { hmsStore } from "@/lib/store"
+import { toast } from "sonner"
 
 export default function SettingsPage() {
     const { theme, setTheme } = useTheme()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    const handleReset = () => {
+        toast.warning("Reset to Nepali defaults?", {
+            description: "This will clear all current records and restore the localized Nepali seed data.",
+            action: {
+                label: "Reset Now",
+                onClick: () => {
+                    hmsStore.clearAll()
+                    toast.success("System reset successfully!")
+                    setTimeout(() => window.location.reload(), 1000)
+                }
+            }
+        })
+    }
 
     return (
         <div className="max-w-4xl space-y-8">
@@ -14,6 +36,7 @@ export default function SettingsPage() {
                 <p className="text-muted-foreground">Manage your account preferences and application settings.</p>
             </div>
 
+            {/* Appearance Section */}
             <section className="space-y-4">
                 <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                     <Monitor className="h-5 w-5" /> Appearance
@@ -29,7 +52,7 @@ export default function SettingsPage() {
                             onClick={() => setTheme(mode.id)}
                             className={cn(
                                 "flex flex-col items-center justify-center gap-3 rounded-2xl border-2 p-6 transition-all",
-                                theme === mode.id
+                                mounted && theme === mode.id
                                     ? "border-primary bg-primary/5 text-primary"
                                     : "border-border bg-card text-muted-foreground hover:border-muted-foreground/30"
                             )}
@@ -41,41 +64,27 @@ export default function SettingsPage() {
                 </div>
             </section>
 
-            <div className="grid gap-6 md:grid-cols-2">
-                <section className="rounded-2xl border border-border bg-card p-6 space-y-4 shadow-sm">
-                    <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                        <Shield className="h-5 w-5" /> Security
-                    </h3>
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-foreground">Two-Factor Authentication</p>
-                                <p className="text-xs text-muted-foreground">Add an extra layer of security</p>
-                            </div>
-                            <div className="h-5 w-10 rounded-full bg-muted relative cursor-pointer">
-                                <div className="absolute left-1 top-1 h-3 w-3 rounded-full bg-white transition-all shadow-sm" />
-                            </div>
+            {/* Data Management Section */}
+            <section className="space-y-4 pt-4 border-t border-border">
+                <h3 className="text-lg font-semibold text-destructive flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5" /> Data Management
+                </h3>
+                <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h4 className="font-bold text-foreground">Reset Application Data</h4>
+                            <p className="text-sm text-muted-foreground">Reload the system with localized Nepali seed data. This will clear all existing records.</p>
                         </div>
+                        <button
+                            onClick={handleReset}
+                            className="inline-flex items-center gap-2 rounded-xl bg-destructive px-5 py-2.5 text-sm font-bold text-destructive-foreground hover:opacity-90 transition-all shadow-lg shadow-destructive/20"
+                        >
+                            <RefreshCw className="h-4 w-4" />
+                            Reset to Nepali Defaults
+                        </button>
                     </div>
-                </section>
-
-                <section className="rounded-2xl border border-border bg-card p-6 space-y-4 shadow-sm">
-                    <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                        <Bell className="h-5 w-5" /> Notifications
-                    </h3>
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-foreground">Email Alerts</p>
-                                <p className="text-xs text-muted-foreground">Receive updates via email</p>
-                            </div>
-                            <div className="h-5 w-10 rounded-full bg-primary relative cursor-pointer">
-                                <div className="absolute right-1 top-1 h-3 w-3 rounded-full bg-white transition-all shadow-sm" />
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
+                </div>
+            </section>
         </div>
     )
 }

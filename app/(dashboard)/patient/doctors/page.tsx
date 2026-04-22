@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { hmsStore, Doctor } from "@/lib/store"
 import { Search, Stethoscope, Phone, Mail, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
+import { AppointmentBookingModal } from "@/components/appointment-booking-modal"
 
 const SPECIALTIES = ["All", "Cardiology", "Neurology", "Pediatrics", "Dermatology", "Orthopedics", "General Medicine"]
 
@@ -11,10 +13,17 @@ export default function PatientDoctorsPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [specialtyFilter, setSpecialtyFilter] = useState("All")
+  const [selectedDoctorId, setSelectedDoctorId] = useState<string | null>(null)
+  const [isBookingOpen, setIsBookingOpen] = useState(false)
 
   useEffect(() => {
     setDoctors(hmsStore.getDoctors())
   }, [])
+
+  const handleBookClick = (id: string) => {
+    setSelectedDoctorId(id)
+    setIsBookingOpen(true)
+  }
 
   const filtered = doctors.filter((d) => {
     const matchSearch =
@@ -31,7 +40,7 @@ export default function PatientDoctorsPage() {
         <p className="text-muted-foreground">Browse our team of qualified specialists.</p>
       </div>
 
-      {/* Filters */}
+      {/* Filters omitted for brevity in replace_file_content targetContent, but I will provide full replacement below */}
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -106,6 +115,7 @@ export default function PatientDoctorsPage() {
               </div>
 
               <button
+                onClick={() => handleBookClick(doctor.id)}
                 disabled={doctor.status !== "Active"}
                 className="w-full rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm shadow-primary/20"
               >
@@ -115,6 +125,14 @@ export default function PatientDoctorsPage() {
           ))
         )}
       </div>
+
+      {isBookingOpen && (
+        <AppointmentBookingModal
+          preSelectedDoctorId={selectedDoctorId || undefined}
+          onClose={() => setIsBookingOpen(false)}
+          onBooked={() => toast.success("Redirecting to appointments...")}
+        />
+      )}
     </div>
   )
 }

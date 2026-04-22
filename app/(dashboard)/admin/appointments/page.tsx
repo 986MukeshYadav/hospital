@@ -8,6 +8,7 @@ import {
 import { cn } from "@/lib/utils"
 import { hmsStore, Appointment } from "@/lib/store"
 import { AddAppointmentForm } from "@/components/add-appointment-form"
+import { toast } from "sonner"
 
 const STATUS_STYLES: Record<string, string> = {
   Confirmed: "bg-emerald-500/10 text-emerald-600",
@@ -45,18 +46,28 @@ export default function AppointmentsPage() {
   const updateStatus = (id: string, newStatus: Appointment["status"]) => {
     hmsStore.updateAppointment(id, { status: newStatus })
     setAppointments(hmsStore.getAppointments())
+    toast.success(`Appointment status updated to ${newStatus}`)
   }
 
   const handleDelete = (id: string) => {
-    if (!confirm("Delete this appointment?")) return
-    hmsStore.deleteAppointment(id)
-    setAppointments(hmsStore.getAppointments())
+    toast.warning("Delete appointment?", {
+      description: "Are you sure you want to remove this appointment record?",
+      action: {
+        label: "Delete",
+        onClick: () => {
+          hmsStore.deleteAppointment(id)
+          setAppointments(hmsStore.getAppointments())
+          toast.success("Appointment deleted")
+        },
+      },
+    })
   }
 
   const handleAdd = (data: Omit<Appointment, "id" | "createdAt" | "status">) => {
     hmsStore.addAppointment({ ...data, status: "Pending" })
     setAppointments(hmsStore.getAppointments())
     setIsAddModalOpen(false)
+    toast.success("Appointment created successfully")
   }
 
   // Export only the currently FILTERED rows

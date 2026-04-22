@@ -5,6 +5,13 @@ import { Search, UserRound, MoreVertical, Plus, Stethoscope, Trash2, Pencil, X }
 import { cn } from "@/lib/utils"
 import { hmsStore, Doctor } from "@/lib/store"
 import { AddDoctorForm } from "@/components/add-doctor-form"
+import { toast } from "sonner"
+
+const statusColors: Record<string, string> = {
+    Active: "bg-emerald-500/10 text-emerald-600",
+    "On Leave": "bg-amber-500/10 text-amber-600",
+    Inactive: "bg-muted text-muted-foreground",
+}
 
 export default function DoctorsPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([])
@@ -27,6 +34,7 @@ export default function DoctorsPage() {
     const newDoc = hmsStore.addDoctor(data)
     setDoctors(hmsStore.getDoctors())
     setIsAddModalOpen(false)
+    toast.success("Doctor added successfully")
   }
 
   const handleToggleStatus = (id: string) => {
@@ -36,13 +44,22 @@ export default function DoctorsPage() {
     hmsStore.updateDoctor(id, { status: newStatus })
     setDoctors(hmsStore.getDoctors())
     setMenuOpenId(null)
+    toast.info(`Doctor status updated to ${newStatus}`)
   }
 
   const handleDelete = (id: string) => {
-    if (!confirm("Are you sure you want to remove this doctor?")) return
-    hmsStore.deleteDoctor(id)
-    setDoctors(hmsStore.getDoctors())
-    setMenuOpenId(null)
+    toast.warning("Remove doctor?", {
+      description: "Are you sure you want to remove this doctor from the registry?",
+      action: {
+        label: "Remove",
+        onClick: () => {
+          hmsStore.deleteDoctor(id)
+          setDoctors(hmsStore.getDoctors())
+          setMenuOpenId(null)
+          toast.success("Doctor removed")
+        },
+      },
+    })
   }
 
   const statusColors: Record<string, string> = {

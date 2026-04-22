@@ -5,6 +5,7 @@ import { Search, User, Phone, MapPin, Plus, MoreVertical, Trash2, X } from "luci
 import { hmsStore, Patient } from "@/lib/store"
 import { AddPatientForm } from "@/components/add-patient-form"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
 
 export default function PatientsPage() {
   const [patients, setPatients] = useState<Patient[]>([])
@@ -27,6 +28,7 @@ export default function PatientsPage() {
     hmsStore.addPatient(data)
     setPatients(hmsStore.getPatients())
     setIsAddModalOpen(false)
+    toast.success("Patient added successfully")
   }
 
   const handleToggleStatus = (id: string) => {
@@ -35,13 +37,22 @@ export default function PatientsPage() {
     hmsStore.updatePatient(id, { status: patient.status === "Active" ? "Inactive" : "Active" })
     setPatients(hmsStore.getPatients())
     setMenuOpenId(null)
+    toast.info(`Patient status updated to ${patient.status === "Active" ? "Inactive" : "Active"}`)
   }
 
   const handleDelete = (id: string) => {
-    if (!confirm("Delete this patient? This action cannot be undone.")) return
-    hmsStore.deletePatient(id)
-    setPatients(hmsStore.getPatients())
-    setMenuOpenId(null)
+    toast.warning("Delete patient?", {
+      description: "This will permanently remove the patient profile. Are you sure?",
+      action: {
+        label: "Delete",
+        onClick: () => {
+          hmsStore.deletePatient(id)
+          setPatients(hmsStore.getPatients())
+          setMenuOpenId(null)
+          toast.success("Patient deleted")
+        },
+      },
+    })
   }
 
   return (

@@ -13,13 +13,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             async authorize(credentials) {
                 // Mocking user for now based on role
                 if (credentials?.email === "admin@hms.com" && credentials?.password === "admin123") {
-                    return { id: "1", name: "Admin User", email: "admin@hms.com", role: "Admin" }
+                    return { id: "1", name: "Prabesh Khanal", email: "admin@hms.com", role: "Admin" }
                 }
                 if (credentials?.email === "doctor@hms.com" && credentials?.password === "doctor123") {
-                    return { id: "2", name: "Dr. Smith", email: "doctor@hms.com", role: "Doctor" }
+                    return { id: "2", name: "Dr. Anish Prasad Joshi", email: "doctor@hms.com", role: "Doctor" }
                 }
                 if (credentials?.email === "patient@hms.com" && credentials?.password === "patient123") {
-                    return { id: "3", name: "John Doe", email: "patient@hms.com", role: "Patient" }
+                    return { id: "3", name: "Ram Bahadur Thapa", email: "patient@hms.com", role: "Patient" }
                 }
                 return null
             },

@@ -46,17 +46,17 @@ export function AddPatientForm({ onClose, onSubmitSuccess }: AddPatientFormProps
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className={labelClass}>Full Name</label>
-          <input {...register("name")} className={inputClass} placeholder="John Doe" />
+          <input {...register("name")} className={inputClass} placeholder="Ram Bahadur Thapa" />
           {errors.name && <p className={errorClass}>{errors.name.message}</p>}
         </div>
         <div>
           <label className={labelClass}>Email</label>
-          <input {...register("email")} type="email" className={inputClass} placeholder="john@example.com" />
+          <input {...register("email")} type="email" className={inputClass} placeholder="ram@example.com" />
           {errors.email && <p className={errorClass}>{errors.email.message}</p>}
         </div>
         <div>
           <label className={labelClass}>Phone Number</label>
-          <input {...register("phone")} className={inputClass} placeholder="+91 9876543210" />
+          <input {...register("phone")} className={inputClass} placeholder="+977 9841234567" />
           {errors.phone && <p className={errorClass}>{errors.phone.message}</p>}
         </div>
         <div>

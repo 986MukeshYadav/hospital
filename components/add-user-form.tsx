@@ -44,7 +44,7 @@ export function AddUserForm({ onClose, onSubmitSuccess }: AddUserFormProps) {
                 <input
                     {...register("name")}
                     className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary"
-                    placeholder="Full Name"
+                    placeholder="Prabesh Khanal"
                 />
                 {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
             </div>

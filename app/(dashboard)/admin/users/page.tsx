@@ -4,15 +4,12 @@ import { useState, useEffect } from "react"
 import { Search, MoreVertical, Shield, Mail, Activity, Plus, Trash2, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { AddUserForm } from "@/components/add-user-form"
-
-// We don't have a users store yet, but we can mock it or add it to store.ts
-// For now, I'll use the existing Admin/Doctor/Patient role structure
-// and just fix the UI.
+import { toast } from "sonner"
 
 const initialUsers = [
-    { id: "U-001", name: "Admin System", email: "admin@hms.com", role: "Admin", status: "Active" },
-    { id: "U-002", name: "Dr. Smith", email: "doctor@hms.com", role: "Doctor", status: "Active" },
-    { id: "U-003", name: "John Doe", email: "patient@hms.com", role: "Patient", status: "Active" },
+    { id: "U-001", name: "Prabesh Khanal", email: "admin@hms.com", role: "Admin", status: "Active" },
+    { id: "U-002", name: "Dr. Anish Prasad Joshi", email: "doctor@hms.com", role: "Doctor", status: "Active" },
+    { id: "U-003", name: "Ram Bahadur Thapa", email: "patient@hms.com", role: "Patient", status: "Active" },
 ]
 
 export default function UsersPage() {
@@ -27,9 +24,16 @@ export default function UsersPage() {
     )
 
     const deleteUser = (id: string) => {
-        if (confirm("Are you sure you want to delete this user?")) {
-            setUsers(users.filter(u => u.id !== id))
-        }
+        toast.warning("Delete User?", {
+            description: "This action cannot be undone. Are you sure you want to delete this user?",
+            action: {
+                label: "Delete",
+                onClick: () => {
+                    setUsers(users.filter(u => u.id !== id))
+                    toast.success("User deleted successfully")
+                },
+            },
+        })
     }
 
     const handleAddUser = (data: any) => {

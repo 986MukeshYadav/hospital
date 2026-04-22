@@ -3,10 +3,11 @@
 import { useState } from "react"
 import { CreditCard, Download, Search, CheckCircle2, Clock, IndianRupee, Printer } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
 
 const initialInvoices = [
     { id: "INV-001", description: "General Consultation", amount: 500.00, status: "Paid", date: "2026-04-18" },
-    { id: "INV-002", description: "Blood Test & Pharmacy", amount: 1250.00, status: "Unpaid", date: "2026-04-20" },
+    { id: "INV-002", description: "Blood Test & Pharmacy", amount: 1250.00, status: "Paid", date: "2026-04-20" },
 ]
 
 export default function PatientBillingPage() {
@@ -16,6 +17,40 @@ export default function PatientBillingPage() {
         setInvoices(invoices.map(inv =>
             inv.id === id ? { ...inv, status: "Paid" } : inv
         ))
+        toast.success("Payment successful!", {
+            description: `Invoice ${id} has been marked as paid.`,
+        })
+    }
+
+    const handleDownload = async (invoice: any) => {
+        toast.promise(
+            (async () => {
+                await new Promise(resolve => setTimeout(resolve, 1200))
+                
+                const text = [
+                    `INVOICE: ${invoice.id}`,
+                    `Date: ${invoice.date}`,
+                    `Description: ${invoice.description}`,
+                    `Amount: ₹${invoice.amount.toLocaleString()}`,
+                    `Status: ${invoice.status}`,
+                    ``,
+                    `Thank you for using our Hospital Management System.`,
+                ].join("\n")
+                
+                const blob = new Blob([text], { type: "text/plain" })
+                const url = URL.createObjectURL(blob)
+                const a = document.createElement("a")
+                a.href = url
+                a.download = `invoice_${invoice.id}.txt`
+                a.click()
+                URL.revokeObjectURL(url)
+            })(),
+            {
+                loading: `Preparing invoice ${invoice.id}...`,
+                success: `Invoice ${invoice.id} downloaded successfully.`,
+                error: "Failed to download invoice.",
+            }
+        )
     }
 
     return (
@@ -37,10 +72,12 @@ export default function PatientBillingPage() {
                     </div>
                 </div>
                 <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Last Payment</p>
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Total Paid</p>
                     <div className="flex items-center gap-2">
                         <CheckCircle2 className="h-6 w-6 text-emerald-600" />
-                        <span className="text-3xl font-bold text-foreground">500</span>
+                        <span className="text-3xl font-bold text-foreground">
+                            {invoices.filter(i => i.status === "Paid").reduce((acc, current) => acc + current.amount, 0).toLocaleString()}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -88,7 +125,10 @@ export default function PatientBillingPage() {
                                                 Pay Now
                                             </button>
                                         )}
-                                        <button className="rounded-lg border border-border p-2 hover:bg-muted text-muted-foreground transition-all">
+                                        <button 
+                                            onClick={() => handleDownload(invoice)}
+                                            className="rounded-lg border border-border p-2 hover:bg-muted text-muted-foreground transition-all"
+                                        >
                                             <Download className="h-4 w-4" />
                                         </button>
                                     </div>

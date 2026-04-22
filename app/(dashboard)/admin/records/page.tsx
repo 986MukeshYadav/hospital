@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Search, FileText, Download, ClipboardList, Plus, X, Trash2 } from "lucide-react"
 import { hmsStore, MedicalRecord } from "@/lib/store"
 import { AddRecordForm } from "@/components/add-record-form"
+import { toast } from "sonner"
 
 export default function RecordsPage() {
   const [records, setRecords] = useState<MedicalRecord[]>([])
@@ -25,12 +26,21 @@ export default function RecordsPage() {
     hmsStore.addRecord(data)
     setRecords(hmsStore.getRecords())
     setIsAddModalOpen(false)
+    toast.success("Medical record added successfully")
   }
 
   const handleDelete = (id: string) => {
-    if (!confirm("Delete this medical record?")) return
-    hmsStore.deleteRecord(id)
-    setRecords(hmsStore.getRecords())
+    toast.warning("Delete medical record?", {
+      description: "This will permanently remove the patient record. Proceed?",
+      action: {
+        label: "Delete",
+        onClick: () => {
+          hmsStore.deleteRecord(id)
+          setRecords(hmsStore.getRecords())
+          toast.success("Record deleted")
+        },
+      },
+    })
   }
 
   // Download a single record as text

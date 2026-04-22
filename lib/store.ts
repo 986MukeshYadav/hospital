@@ -57,29 +57,30 @@ export interface MedicalRecord {
 // ─── Seed Data ────────────────────────────────────────────────────────────────
 
 const SEED_PATIENTS: Patient[] = [
-  { id: "P-001", name: "John Doe", email: "john@example.com", phone: "+91 9876543210", gender: "Male", dateOfBirth: "1990-05-15", address: "123 Main St, Delhi", status: "Active", createdAt: "2026-01-10" },
-  { id: "P-002", name: "Jane Smith", email: "jane@example.com", phone: "+91 9876543211", gender: "Female", dateOfBirth: "1988-10-22", address: "456 Oak Ave, Mumbai", status: "Active", createdAt: "2026-01-15" },
-  { id: "P-003", name: "Robert Wilson", email: "robert@example.com", phone: "+91 9876543212", gender: "Male", dateOfBirth: "1975-03-08", address: "789 Pine Rd, Bangalore", status: "Active", createdAt: "2026-02-01" },
+  { id: "P-001", name: "Ram Bahadur Thapa", email: "ram@example.com", phone: "+977 9841234567", gender: "Male", dateOfBirth: "1990-05-15", address: "New Baneshwor, Kathmandu", status: "Active", createdAt: "2026-01-10" },
+  { id: "P-002", name: "Sita Kumari Baral", email: "sita@example.com", phone: "+977 9812345678", gender: "Female", dateOfBirth: "1988-10-22", address: "Lakeside, Pokhara", status: "Active", createdAt: "2026-01-15" },
+  { id: "P-003", name: "Gopal Prasad Yadav", email: "gopal@example.com", phone: "+977 9851098765", gender: "Male", dateOfBirth: "1975-03-08", address: "Nayatola, Biratnagar", status: "Active", createdAt: "2026-02-01" },
 ]
 
 const SEED_DOCTORS: Doctor[] = [
-  { id: "D-001", name: "Dr. Sarah Smith", specialty: "Cardiology", department: "Cardiac Sciences", email: "sarah@hms.com", phone: "+91 9876500001", experience: "12 years", status: "Active", createdAt: "2025-06-01" },
-  { id: "D-002", name: "Dr. James Wilson", specialty: "Neurology", department: "Neuro Sciences", email: "james@hms.com", phone: "+91 9876500002", experience: "8 years", status: "Active", createdAt: "2025-07-15" },
-  { id: "D-003", name: "Dr. Emily Chen", specialty: "Pediatrics", department: "Child Health", email: "emily@hms.com", phone: "+91 9876500003", experience: "15 years", status: "On Leave", createdAt: "2025-05-10" },
-  { id: "D-004", name: "Dr. Raj Patel", specialty: "Orthopedics", department: "Bone & Joint", email: "raj@hms.com", phone: "+91 9876500004", experience: "10 years", status: "Active", createdAt: "2025-08-20" },
+  { id: "D-001", name: "Dr. Anish Prasad Joshi", specialty: "Cardiology", department: "Cardiac Sciences", email: "anish@hms.com", phone: "+977 9861000001", experience: "12 years", status: "Active", createdAt: "2025-06-01" },
+  { id: "D-002", name: "Dr. Pratima Sharma", specialty: "Neurology", department: "Neuro Sciences", email: "pratima@hms.com", phone: "+977 9842000002", experience: "8 years", status: "Active", createdAt: "2025-07-15" },
+  { id: "D-003", name: "Dr. Suman K.C.", specialty: "Pediatrics", department: "Child Health", email: "suman@hms.com", phone: "+977 9813000003", experience: "15 years", status: "On Leave", createdAt: "2025-05-10" },
+  { id: "D-004", name: "Dr. Bidhya Devi Shah", specialty: "Orthopedics", department: "Bone & Joint", email: "bidhya@hms.com", phone: "+977 9851000004", experience: "10 years", status: "Active", createdAt: "2025-08-20" },
 ]
 
 const SEED_APPOINTMENTS: Appointment[] = [
-  { id: "A-1001", patientId: "P-001", patient: "John Doe", doctorId: "D-001", doctor: "Dr. Sarah Smith", specialty: "Cardiology", date: "2026-04-22", time: "10:30", type: "Consultation", status: "Confirmed", notes: "Regular checkup", createdAt: "2026-04-20" },
-  { id: "A-1002", patientId: "P-002", patient: "Jane Smith", doctorId: "D-002", doctor: "Dr. James Wilson", specialty: "Neurology", date: "2026-04-25", time: "14:15", type: "Follow-up", status: "Pending", notes: "Follow-up on MRI results", createdAt: "2026-04-21" },
-  { id: "A-1003", patientId: "P-003", patient: "Robert Wilson", doctorId: "D-003", doctor: "Dr. Emily Chen", specialty: "Pediatrics", date: "2026-04-28", time: "09:00", type: "Consultation", status: "Cancelled", notes: "", createdAt: "2026-04-18" },
+  { id: "A-1001", patientId: "P-001", patient: "Ram Bahadur Thapa", doctorId: "D-001", doctor: "Dr. Anish Prasad Joshi", specialty: "Cardiology", date: "2026-04-22", time: "10:30", type: "Consultation", status: "Confirmed", notes: "Regular checkup", createdAt: "2026-04-20" },
+  { id: "A-1002", patientId: "P-002", patient: "Sita Kumari Baral", doctorId: "D-002", doctor: "Dr. Pratima Sharma", specialty: "Neurology", date: "2026-04-25", time: "14:15", type: "Follow-up", status: "Pending", notes: "Follow-up on MRI results", createdAt: "2026-04-21" },
+  { id: "A-1003", patientId: "P-003", patient: "Gopal Prasad Yadav", doctorId: "D-003", doctor: "Dr. Suman K.C.", specialty: "Pediatrics", date: "2026-04-28", time: "09:00", type: "Consultation", status: "Cancelled", notes: "", createdAt: "2026-04-18" },
 ]
 
 const SEED_RECORDS: MedicalRecord[] = [
-  { id: "REC-001", patientId: "P-001", patient: "John Doe", doctorId: "D-001", doctor: "Dr. Sarah Smith", diagnosis: "Hypertension", prescription: "Amlodipine 5mg once daily", notes: "Monitor BP weekly", date: "2026-02-15", createdAt: "2026-02-15" },
-  { id: "REC-002", patientId: "P-002", patient: "Jane Smith", doctorId: "D-002", doctor: "Dr. James Wilson", diagnosis: "Diabetes Type II", prescription: "Metformin 500mg twice daily", notes: "HbA1c retest in 3 months", date: "2026-02-18", createdAt: "2026-02-18" },
-  { id: "REC-003", patientId: "P-003", patient: "Robert Wilson", doctorId: "D-003", doctor: "Dr. Emily Chen", diagnosis: "Acute Bronchitis", prescription: "Amoxicillin 500mg 3x daily", notes: "Rest and hydration", date: "2026-02-20", createdAt: "2026-02-20" },
+  { id: "REC-001", patientId: "P-001", patient: "Ram Bahadur Thapa", doctorId: "D-001", doctor: "Dr. Anish Prasad Joshi", diagnosis: "Hypertension", prescription: "Amlodipine 5mg once daily", notes: "Monitor BP weekly", date: "2026-02-15", createdAt: "2026-02-15" },
+  { id: "REC-002", patientId: "P-002", patient: "Sita Kumari Baral", doctorId: "D-002", doctor: "Dr. Pratima Sharma", diagnosis: "Diabetes Type II", prescription: "Metformin 500mg twice daily", notes: "HbA1c retest in 3 months", date: "2026-02-18", createdAt: "2026-02-18" },
+  { id: "REC-003", patientId: "P-003", patient: "Gopal Prasad Yadav", doctorId: "D-003", doctor: "Dr. Suman K.C.", specialty: "Acute Bronchitis", prescription: "Amoxicillin 500mg 3x daily", notes: "Rest and hydration", date: "2026-02-20", createdAt: "2026-02-20" },
 ]
+
 
 // ─── Storage Keys ─────────────────────────────────────────────────────────────
 
@@ -92,9 +93,20 @@ const KEYS = {
 
 // ─── Store Helpers ────────────────────────────────────────────────────────────
 
+const STORE_VERSION = "2.0-nepali"
+
 function load<T>(key: string, seed: T[]): T[] {
   if (typeof window === "undefined") return seed
   try {
+    // Force reset if version mismatch
+    const currentVersion = localStorage.getItem("hms_store_version")
+    if (currentVersion !== STORE_VERSION) {
+      Object.values(KEYS).forEach(k => localStorage.removeItem(k))
+      localStorage.setItem("hms_store_version", STORE_VERSION)
+      localStorage.setItem(key, JSON.stringify(seed))
+      return seed
+    }
+
     const raw = localStorage.getItem(key)
     if (!raw) {
       localStorage.setItem(key, JSON.stringify(seed))

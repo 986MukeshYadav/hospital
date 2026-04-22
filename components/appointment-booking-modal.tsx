@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { useSession } from "next-auth/react"
+import { toast } from "sonner"
 
 const bookingSchema = z.object({
     specialty: z.string().min(1, "Please select a specialty"),
@@ -21,9 +22,10 @@ type BookingFormValues = z.infer<typeof bookingSchema>
 interface AppointmentBookingModalProps {
     onClose: () => void
     onBooked?: () => void
+    preSelectedDoctorId?: string
 }
 
-export function AppointmentBookingModal({ onClose, onBooked }: AppointmentBookingModalProps) {
+export function AppointmentBookingModal({ onClose, onBooked, preSelectedDoctorId }: AppointmentBookingModalProps) {
     const { data: session } = useSession()
     const [doctors, setDoctors] = useState<Doctor[]>([])
     const [specialties, setSpecialties] = useState<string[]>([])
@@ -35,15 +37,20 @@ export function AppointmentBookingModal({ onClose, onBooked }: AppointmentBookin
         setSpecialties(uniqueSpecialties)
     }, [])
 
+    const defaultDoctor = preSelectedDoctorId ? hmsStore.getDoctors().find(d => d.id === preSelectedDoctorId) : null
+
     const {
         register,
         handleSubmit,
         watch,
+        setValue,
         formState: { errors, isSubmitting },
     } = useForm<BookingFormValues>({
         resolver: zodResolver(bookingSchema),
         defaultValues: {
             date: new Date().toISOString().split("T")[0],
+            specialty: defaultDoctor?.specialty || "",
+            doctorId: preSelectedDoctorId || "",
         }
     })
 
@@ -53,8 +60,8 @@ export function AppointmentBookingModal({ onClose, onBooked }: AppointmentBookin
         const doctor = doctors.find(d => d.id === data.doctorId)
         
         hmsStore.addAppointment({
-            patientId: "P-DEMO", // In real app, get from session/patient record
-            patient: session?.user?.name || "John Doe",
+            patientId: session?.user?.id || `P-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
+            patient: session?.user?.name || "Patient Account",
             doctorId: data.doctorId,
             doctor: doctor?.name || "Unknown Doctor",
             specialty: doctor?.specialty || data.specialty,
@@ -66,6 +73,9 @@ export function AppointmentBookingModal({ onClose, onBooked }: AppointmentBookin
         })
 
         await new Promise((resolve) => setTimeout(resolve, 800))
+        toast.success("Appointment booked!", {
+            description: `Your consultation with ${doctor?.name} is scheduled for ${data.date}.`,
+        })
         if (onBooked) onBooked()
         onClose()
     }

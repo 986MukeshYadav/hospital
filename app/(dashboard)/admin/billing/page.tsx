@@ -3,10 +3,11 @@
 import { useState } from "react"
 import { CreditCard, Download, Search, CheckCircle2, Clock, AlertCircle, IndianRupee } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
 
 const initialInvoices = [
-    { id: "INV-001", patient: "John Doe", amount: 1200.00, status: "Paid", date: "2026-02-18" },
-    { id: "INV-002", patient: "Jane Smith", amount: 2500.00, status: "Unpaid", date: "2026-02-19" },
+    { id: "INV-001", patient: "Ram Bahadur Thapa", amount: 1200.00, status: "Paid", date: "2026-02-18" },
+    { id: "INV-002", patient: "Sita Kumari Baral", amount: 2500.00, status: "Unpaid", date: "2026-02-19" },
     { id: "INV-003", patient: "Robert Wilson", amount: 750.25, status: "Unpaid", date: "2026-02-19" },
 ]
 
@@ -18,6 +19,40 @@ export default function BillingPage() {
         setInvoices(invoices.map(inv =>
             inv.id === id ? { ...inv, status: "Paid" } : inv
         ))
+        toast.success("Invoice updated", {
+            description: `Invoice ${id} has been marked as paid.`,
+        })
+    }
+
+    const handleDownload = async (invoice: any) => {
+        toast.promise(
+            (async () => {
+                await new Promise(resolve => setTimeout(resolve, 1200))
+                
+                const text = [
+                    `INVOICE: ${invoice.id}`,
+                    `Patient: ${invoice.patient}`,
+                    `Date: ${invoice.date}`,
+                    `Amount: ₹${invoice.amount.toLocaleString()}`,
+                    `Status: ${invoice.status}`,
+                    ``,
+                    `Hospital Management System — Admin Billing Registry`,
+                ].join("\n")
+                
+                const blob = new Blob([text], { type: "text/plain" })
+                const url = URL.createObjectURL(blob)
+                const a = document.createElement("a")
+                a.href = url
+                a.download = `invoice_${invoice.id}.txt`
+                a.click()
+                URL.revokeObjectURL(url)
+            })(),
+            {
+                loading: `Preparing invoice ${invoice.id}...`,
+                success: `Invoice ${invoice.id} downloaded successfully.`,
+                error: "Failed to download invoice.",
+            }
+        )
     }
 
     const filteredInvoices = invoices.filter(inv =>
@@ -117,7 +152,10 @@ export default function BillingPage() {
                                                         Mark Paid
                                                     </button>
                                                 )}
-                                                <button className="text-muted-foreground hover:text-foreground p-1 rounded-lg hover:bg-muted transition-all">
+                                                <button 
+                                                    onClick={() => handleDownload(invoice)}
+                                                    className="text-muted-foreground hover:text-foreground p-1 rounded-lg hover:bg-muted transition-all"
+                                                >
                                                     <Download className="h-4 w-4" />
                                                 </button>
                                             </div>

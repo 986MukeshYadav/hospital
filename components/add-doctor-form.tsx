@@ -59,7 +59,7 @@ export function AddDoctorForm({ onClose, onSubmitSuccess }: AddDoctorFormProps) 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className={labelClass}>Full Name</label>
-          <input {...register("name")} className={inputClass} placeholder="Dr. John Smith" />
+          <input {...register("name")} className={inputClass} placeholder="Dr. Anish Prasad Joshi" />
           {errors.name && <p className={errorClass}>{errors.name.message}</p>}
         </div>
         <div>
@@ -69,7 +69,7 @@ export function AddDoctorForm({ onClose, onSubmitSuccess }: AddDoctorFormProps) 
         </div>
         <div>
           <label className={labelClass}>Phone Number</label>
-          <input {...register("phone")} className={inputClass} placeholder="+91 9876543210" />
+          <input {...register("phone")} className={inputClass} placeholder="+977 9861000001" />
           {errors.phone && <p className={errorClass}>{errors.phone.message}</p>}
         </div>
         <div>

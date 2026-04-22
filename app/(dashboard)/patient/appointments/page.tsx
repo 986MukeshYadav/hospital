@@ -6,6 +6,21 @@ import { cn } from "@/lib/utils"
 import { hmsStore, Appointment } from "@/lib/store"
 import { useSession } from "next-auth/react"
 import { AppointmentBookingModal } from "@/components/appointment-booking-modal"
+import { toast } from "sonner"
+
+const STATUS_STYLES: Record<string, string> = {
+  Confirmed: "bg-emerald-500/10 text-emerald-600",
+  Pending: "bg-amber-500/10 text-amber-600",
+  Completed: "bg-blue-500/10 text-blue-600",
+  Cancelled: "bg-destructive/10 text-destructive",
+}
+
+const STATUS_ICON: Record<string, React.ReactNode> = {
+  Confirmed: <CheckCircle2 className="h-3 w-3" />,
+  Pending: <Timer className="h-3 w-3" />,
+  Completed: <CheckCircle2 className="h-3 w-3" />,
+  Cancelled: <XCircle className="h-3 w-3" />,
+}
 
 export default function PatientAppointmentsPage() {
   const { data: session } = useSession()
@@ -18,9 +33,17 @@ export default function PatientAppointmentsPage() {
   }, [])
 
   const handleCancel = (id: string) => {
-    if (!confirm("Cancel this appointment?")) return
-    hmsStore.updateAppointment(id, { status: "Cancelled" })
-    setAppointments(hmsStore.getAppointments())
+    toast.warning("Cancel this appointment?", {
+      description: "Are you sure you want to cancel your consultation?",
+      action: {
+        label: "Cancel Appointment",
+        onClick: () => {
+          hmsStore.updateAppointment(id, { status: "Cancelled" })
+          setAppointments(hmsStore.getAppointments())
+          toast.success("Appointment cancelled")
+        },
+      },
+    })
   }
 
   const STATUS_STYLES: Record<string, string> = {
