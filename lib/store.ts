@@ -78,7 +78,7 @@ const SEED_APPOINTMENTS: Appointment[] = [
 const SEED_RECORDS: MedicalRecord[] = [
   { id: "REC-001", patientId: "P-001", patient: "Ram Bahadur Thapa", doctorId: "D-001", doctor: "Dr. Anish Prasad Joshi", diagnosis: "Hypertension", prescription: "Amlodipine 5mg once daily", notes: "Monitor BP weekly", date: "2026-02-15", createdAt: "2026-02-15" },
   { id: "REC-002", patientId: "P-002", patient: "Sita Kumari Baral", doctorId: "D-002", doctor: "Dr. Pratima Sharma", diagnosis: "Diabetes Type II", prescription: "Metformin 500mg twice daily", notes: "HbA1c retest in 3 months", date: "2026-02-18", createdAt: "2026-02-18" },
-  { id: "REC-003", patientId: "P-003", patient: "Gopal Prasad Yadav", doctorId: "D-003", doctor: "Dr. Suman K.C.", specialty: "Acute Bronchitis", prescription: "Amoxicillin 500mg 3x daily", notes: "Rest and hydration", date: "2026-02-20", createdAt: "2026-02-20" },
+  { id: "REC-003", patientId: "P-003", patient: "Gopal Prasad Yadav", doctorId: "D-003", doctor: "Dr. Suman K.C.", diagnosis: "Acute Bronchitis", prescription: "Amoxicillin 500mg 3x daily", notes: "Rest and hydration", date: "2026-02-20", createdAt: "2026-02-20" },
 ]
 
 
@@ -93,7 +93,7 @@ const KEYS = {
 
 // ─── Store Helpers ────────────────────────────────────────────────────────────
 
-const STORE_VERSION = "2.0-nepali"
+const STORE_VERSION = "2.1-nepali"
 
 function load<T>(key: string, seed: T[]): T[] {
   if (typeof window === "undefined") return seed

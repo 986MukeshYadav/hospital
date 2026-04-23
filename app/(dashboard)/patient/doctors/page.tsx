@@ -27,8 +27,8 @@ export default function PatientDoctorsPage() {
 
   const filtered = doctors.filter((d) => {
     const matchSearch =
-      d.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      d.specialty.toLowerCase().includes(searchTerm.toLowerCase())
+      (d.name?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (d.specialty?.toLowerCase() || "").includes(searchTerm.toLowerCase())
     const matchSpecialty = specialtyFilter === "All" || d.specialty === specialtyFilter
     return matchSearch && matchSpecialty
   })

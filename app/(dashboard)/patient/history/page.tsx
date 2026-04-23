@@ -15,8 +15,8 @@ export default function PatientHistoryPage() {
 
   const filtered = records.filter(
     (r) =>
-      r.diagnosis.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.doctor.toLowerCase().includes(searchTerm.toLowerCase())
+      (r.diagnosis?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (r.doctor?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   )
 
   const handleDownload = (record: MedicalRecord) => {

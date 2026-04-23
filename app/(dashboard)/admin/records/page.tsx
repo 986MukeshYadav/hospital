@@ -17,9 +17,9 @@ export default function RecordsPage() {
 
   const filteredRecords = records.filter(
     (r) =>
-      r.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.diagnosis.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.doctor.toLowerCase().includes(searchTerm.toLowerCase())
+      (r.patient?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (r.diagnosis?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (r.doctor?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   )
 
   const handleAdd = (data: Omit<MedicalRecord, "id" | "createdAt">) => {

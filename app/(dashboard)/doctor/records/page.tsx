@@ -16,8 +16,8 @@ export default function DoctorRecordsPage() {
 
   const filtered = records.filter(
     (r) =>
-      r.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.diagnosis.toLowerCase().includes(searchTerm.toLowerCase())
+      (r.patient?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (r.diagnosis?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   )
 
   const handleAdd = (data: any) => {
